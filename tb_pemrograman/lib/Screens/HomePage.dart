@@ -1,11 +1,15 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tb_pemrograman/Component/defaultElements.dart';
 import 'package:tb_pemrograman/Models/ShoeListModel.dart';
 import 'package:tb_pemrograman/Models/categoriesModels.dart';
+import 'package:tb_pemrograman/Models/katalog_sepatu.dart';
 import 'package:tb_pemrograman/Screens/itemsCard.dart';
+import 'package:tb_pemrograman/services/api_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,6 +18,48 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
+  final _formKey = GlobalKey<FormState>();
+  final _brandCtl = TextEditingController();
+  final _nameCtl = TextEditingController();
+  String _result = '-';
+  final ApiServices _dataService = ApiServices();
+  List<KatalogSepatuModel> _katalogSepatuMdl = [];
+  KatalogSepatuResponse? ctRes;
+  bool isEdit = false;
+  String idContact = '';
+  String token = '';
+
+  late SharedPreferences logindata;
+  String email = '';
+
+  Future<void> refreshContactList() async {
+    final users = await _dataService.getAllKatalogSepatu();
+    setState(() {
+      if (_katalogSepatuMdl.isNotEmpty) _katalogSepatuMdl.clear();
+      if (users != null) _katalogSepatuMdl.addAll(users);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    inital();
+  }
+
+  void inital() async {
+    logindata = await SharedPreferences.getInstance();
+    setState(() {
+      email = logindata.getString('email').toString();
+      token = logindata.getString('token').toString();
+    });
+  }
+
+  @override
+  void dispose() {
+    _brandCtl.dispose();
+    _nameCtl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,93 +246,52 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 70,
+      height: 65,
+      padding: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: DefaultElements.knavbariconcolor,
-            blurRadius: 10,
-            offset: Offset(0, -1),
-          )
-        ],
-      ),
+          color: Color(0xFF475629),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          )),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SvgPicture.asset(
-            "assets/icons/home.svg",
-            height: 30,
-            color: DefaultElements.kprimarycolor,
+          Icon(
+            Icons.category_outlined,
+            color: Colors.white,
+            size: 32,
           ),
-          SvgPicture.asset(
-            "assets/icons/heart.svg",
-            height: 30,
-            color: DefaultElements.knavbariconcolor,
+          InkWell(
+            onTap: () {
+              // showSlidingBottomSheet(
+              //   context,
+              //   builder: (context) {
+              //     return SlidingSheetDialog(
+              //       elevation: 8,
+              //       cornerRadius: 16,
+              //       builder: (context, state) {
+              //         return BottomCartSheet();
+              //       },
+              //     );
+              //   },
+              // );
+            },
+            child: Icon(
+              CupertinoIcons.cart_fill,
+              color: Colors.white,
+              size: 32,
+            ),
           ),
-          Stack(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  print("Cart");
-                },
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: DefaultElements.kprimarycolor,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: DefaultElements.knavbariconcolor,
-                        offset: Offset(0, -1),
-                        blurRadius: 8.0,
-                      )
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(18),
-                    child: SvgPicture.asset(
-                      "assets/icons/cart.svg",
-                      color: DefaultElements.ksecondrycolor,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 45,
-                bottom: 45,
-                top: 0,
-                right: 0,
-                child: Container(
-                  height: 18,
-                  width: 18,
-                  decoration: BoxDecoration(
-                    color: DefaultElements.kdefaultredcolor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      "2",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              )
-            ],
+          Icon(
+            Icons.favorite_border,
+            color: Colors.white,
+            size: 32,
           ),
-          SvgPicture.asset(
-            "assets/icons/list.svg",
-            height: 30,
-            color: DefaultElements.knavbariconcolor,
-          ),
-          SvgPicture.asset(
-            "assets/icons/person.svg",
-            height: 30,
-            color: DefaultElements.knavbariconcolor,
+          Icon(
+            Icons.person,
+            color: Colors.white,
+            size: 32,
           ),
         ],
       ),
