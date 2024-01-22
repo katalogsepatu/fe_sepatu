@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_besar/Models/Product/product.dart';
 import 'package:tugas_besar/Models/katalog_sepatu.dart';
-import 'package:tugas_besar/UI/home/components/body.dart';
 import 'package:tugas_besar/constants.dart';
+
+import 'components/body.dart';
 
 class DetailScreen extends StatelessWidget {
   final KatalogSepatuModel katalogSepatuModel;
@@ -15,7 +17,7 @@ class DetailScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: buildAppBar(context),
       body: Body(
-        katalogSepatuModel: katalogSepatuModel,
+        KatalogSepatuModel: KatalogSepatuModel,
       ),
     );
   }
@@ -37,7 +39,7 @@ class DetailScreen extends StatelessWidget {
           padding: EdgeInsets.only(right: kDefaulPadding),
           onPressed: () {},
           icon: Icon(Icons.favorite_border),
-        ),
+        )
       ],
     );
   }

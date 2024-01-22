@@ -26,28 +26,30 @@ class _BodyState extends State<Body> {
       PagingController(firstPageKey: 0);
 
   @override
-  // void initState() {
-  //   super.initState();
-  //   search = TextEditingController();
-  //   _pagingController.addPageRequestListener((pageKey) {
-  //     _fetchPage(pageKey);
-  //   });
-  // }
+  void initState() {
+    super.initState();
+    search = TextEditingController();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+  }
 
-  // Future<void> _fetchPage(int pageKey) async {
-  //   try {
-  //     final newItems = await _dataService.getAllKatalogSepatu(pageKey, search.text);
-  //     final isLastPage = newItems.length < _pagingController.pageSize;
-  //     if (isLastPage) {
-  //       _pagingController.appendLastPage(newItems);
-  //     } else {
-  //       final nextPageKey = pageKey + 1;
-  //       _pagingController.appendPage(newItems, nextPageKey);
-  //     }
-  //   } catch (error) {
-  //     _pagingController.error = error;
-  //   }
-  // }
+  Future<void> _fetchPage(int pageKey) async {
+  try {
+    final newItems = await _dataService.getAllKatalogSepatu(pageKey, search.text);
+    final isLastPage = newItems.length < _pagingController.pageSize;
+
+    if (isLastPage) {
+      _pagingController.appendLastPage(newItems);
+    } else {
+      final nextPageKey = pageKey + 1;
+      _pagingController.appendPage(newItems, nextPageKey);
+    }
+  } catch (error) {
+    // Handle the error appropriately
+    _pagingController.error = error;
+  }
+}
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_besar/Models/Product/product.dart';
+import 'package:tugas_besar/Models/Product/product.dart'; // Import the correct model class
 import 'package:tugas_besar/Models/errormsg.dart';
+import 'package:tugas_besar/Models/katalog_sepatu.dart';
 import 'package:tugas_besar/Service/apiService.dart';
 import 'package:tugas_besar/UI/detailProduct/components/descriptionProduct.dart';
 import 'package:tugas_besar/UI/detailProduct/components/listOfColors.dart';
@@ -11,17 +12,17 @@ import '../../../../constants.dart';
 
 class Body extends StatelessWidget {
   final ApiServices _dataService = ApiServices();
-  final KatalogSepatuModel;
-  
+  final KatalogSepatuModel katalogSepatuModel; // Specify the type of KatalogSepatuModel
+
   Body({
     Key? key,
-    required this.KatalogSepatuModel,
+    required this.katalogSepatuModel,
   }) : super(key: key);
 
   Future<bool> deleteKatalogSepatu() async {
     late ErrorMSG response;
     late bool _success = false;
-    var id = KatalogSepatuModel.id;
+    var id = katalogSepatuModel.id;
 
     response = await _dataService.deleteKatalogSepatu(id);
     _success = response.success;
@@ -49,20 +50,16 @@ class Body extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Hero(
-                  tag: '${KatalogSepatuModel.id}',
+                  tag: '${katalogSepatuModel.id}',
                   child: KatalogSepatuModelImage(
                     size: size,
-                    image: KatalogSepatuModel.image,
+                    image: katalogSepatuModel.image,
                   ),
                 ),
                 ListOfColors(),
               ],
             ),
           ),
-          // DescriptionProduct(
-          //   size: size,
-          //   product: KatalogSepatuModel,
-          // ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 15),
             child: Row(
@@ -73,7 +70,7 @@ class Body extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditKatalogSepatu(
-                          KatalogSepatuModel: KatalogSepatuModel,
+                          katalogSepatuModel: katalogSepatuModel,
                         ),
                       ),
                     );
