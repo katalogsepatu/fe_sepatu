@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:tugas_besar/Models/Category/category.dart';
 import 'package:tugas_besar/Models/katalog_sepatu.dart';
 import 'package:tugas_besar/Models/login_model.dart';
 import 'package:tugas_besar/Models/signup_model.dart';
-import 'package:tugas_besar/Models/Product/product.dart';
 
 class ApiServices {
   final Dio dio = Dio();
@@ -84,30 +84,30 @@ class ApiServices {
     }
   }
 
-  // Future<KatalogSepatuModel?> getSingleKatalogSepatu(String id) async {
-  //   try {
-  //     var response = await dio.get('$_baseUrl/katalogsepatu/$id');
-  //     if (response.statusCode == 200) {
-  //       final data = response.data;
-  //       return KatalogSepatuModel.fromJson(data);
-  //     }
-  //     return null;
-  //   } on DioException catch (e) {
-  //     if (e.response != null && e.response!.statusCode != 200) {
-  //       debugPrint('Client error - the request cannot be fulfilled');
-  //       return null;
-  //     }
-  //     rethrow;
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+  Future<KatalogSepatuModel?> getSingleKatalogSepatu(String id) async {
+    try {
+      var response = await dio.get('$_baseUrl/katalogsepatu/$id');
+      if (response.statusCode == 200) {
+        final data = response.data;
+        return KatalogSepatuModel.fromJson(data);
+      }
+      return null;
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.statusCode != 200) {
+        debugPrint('Client error - the request cannot be fulfilled');
+        return null;
+      }
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<KatalogSepatuResponse?> postKatalogSepatu(
       KatalogSepatuInput ct) async {
     try {
       final response = await dio.post(
-        '$_baseUrl/insert/katalog-sepatu',
+        '$_baseUrl/katalog-sepatu',
         data: ct.toJson(),
       );
       if (response.statusCode == 200) {
@@ -123,7 +123,7 @@ class ApiServices {
       String id, Map<String, dynamic> params) async {
     try {
       final response = await Dio().put(
-        '$_baseUrl/update/katalog-sepatu/$id',
+        '$_baseUrl/katalog-sepatu/$id',
         data: params,
       );
 
@@ -134,6 +134,31 @@ class ApiServices {
       return null;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<List<Category>> getCategory(String id) async {
+    try {
+      final response = await dio.get(
+        '$_baseUrl/katalog-sepatu/$id',
+      );
+
+      if (response.statusCode == 200) {
+        final dataCategories = (response.data['data_categories'] as List)
+            .map((category) => Category.fromJson(category))
+            .toList();
+        return dataCategories;
+      } else {
+        return [];
+      }
+    } on DioError catch (e) {
+      if (e.response != null && e.response!.statusCode != 200) {
+        debugPrint('Client error - the request cannot be fulfilled');
+        return [];
+      }
+      rethrow;
+    } catch (e) {
+      return [];
     }
   }
 

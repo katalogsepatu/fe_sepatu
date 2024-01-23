@@ -1,4 +1,6 @@
 //DIGUNAKAN UNTUK GET ALL DATA
+import 'package:tugas_besar/Models/Category/category.dart';
+
 class KatalogSepatuModel {
   final String id;
   final String brand;
@@ -85,4 +87,10 @@ class KatalogSepatuResponse {
         message: json["message"],
         status: json["status"],
       );
+
+  List<Category>? get categories => null;
+
+  // Future<List<Category>> toList() async {}
+
+  map(Category Function(dynamic json) param0) {}
 }

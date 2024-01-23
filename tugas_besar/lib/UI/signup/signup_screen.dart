@@ -96,6 +96,8 @@ class _SignupFormState extends State<SignupForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmpasswordController =
+      TextEditingController();
   final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _phonenumberController = TextEditingController();
 
@@ -107,6 +109,7 @@ class _SignupFormState extends State<SignupForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmpasswordController.dispose();
     _fullnameController.dispose();
     _phonenumberController.dispose();
     super.dispose();
@@ -120,6 +123,13 @@ class _SignupFormState extends State<SignupForm> {
   }
 
   String? _validatePassword(String? value) {
+    if (value != null && value.length < 3) {
+      return 'Password must be at least 3 characters';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
     if (value != null && value.length < 3) {
       return 'Password must be at least 3 characters';
     }
@@ -212,48 +222,24 @@ class _SignupFormState extends State<SignupForm> {
               SizedBox(
                 height: 20.0,
               ),
-              // TextFormField(
-              //   obscureText: true,
-              //   onSaved: (newValue) => confirmPassword = newValue.toString(),
-              //   onChanged: (value) {
-              //     setState(() {
-              //       confirmPassword = value;
-              //     });
-              //     if (value.isNotEmpty && errors.contains(kPassNullError)) {
-              //       setState(() {
-              //         errors.remove(kPassNullError);
-              //       });
-              //     } else if (password == confirmPassword &&
-              //         !errors.contains(kMatchPassError)) {
-              //       setState(() {
-              //         errors.remove(kMatchPassError);
-              //       });
-              //     }
-              //     return null;
-              //   },
-              //   validator: (value) {
-              //     if (password != confirmPassword &&
-              //         !errors.contains(kMatchPassError)) {
-              //       setState(() {
-              //         errors.add(kMatchPassError);
-              //       });
-              //     }
-              //     return null;
-              //   },
-              //   decoration: InputDecoration(
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8),
-              //       borderSide: BorderSide.none,
-              //     ),
-              //     filled: true,
-              //     fillColor: Color(0xFFe7edeb),
-              //     hintText: "Confirm Password",
-              //     prefixIcon: Icon(
-              //       Iconsax.lock,
-              //       color: Colors.grey[600],
-              //     ),
-              //   ),
-              // ),
+              TextFormField(
+                obscureText: true,
+                validator: _validateConfirmPassword,
+                controller: _confirmpasswordController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Color(0xFFe7edeb),
+                  hintText: "Confirm Password",
+                  prefixIcon: Icon(
+                    Iconsax.lock,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 20.0,
               ),
@@ -290,6 +276,7 @@ class _SignupFormState extends State<SignupForm> {
                       fullname: _fullnameController.text,
                       email: _emailController.text,
                       password: _passwordController.text,
+                      confirmpassword: _confirmpasswordController.text,
                       phonenumber: _phonenumberController.text,
                     );
 

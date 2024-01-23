@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_besar/Models/Category/category.dart';
 import 'package:tugas_besar/Service/apiService.dart';
-
 import '../../../../constants.dart';
 
 class CategoryList extends StatefulWidget {
@@ -14,19 +13,30 @@ class CategoryList extends StatefulWidget {
 class _CategoryListState extends State<CategoryList> {
   int selectedIndex = 0;
   late List<Category> categories = [];
-  // @override
-  // void getCategory() async {
-  //   final respose = await APIService.getCategory();
-  //   setState(() {
-  //     categories = respose.toList();
-  //   });
-  // }
+  final ApiServices _dataService = ApiServices();
 
-  // @override
-  // void initState() {
-  //   getCategory();
-  //   super.initState();
-  // }
+  Future<void> getCategory() async {
+    try {
+      final response = await _dataService.getCategory('');
+      if (response != null) {
+        setState(() {
+          categories = response
+              .map((json) => Category.fromJson(json as Map<String, dynamic>))
+              .toList();
+        });
+      } else {
+        print('Error: Null response from getCategory');
+      }
+    } catch (error) {
+      print('Error fetching categories: $error');
+    }
+  }
+
+  @override
+  void initState() {
+    getCategory();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,10 @@ import 'package:tugas_besar/UI/home/homeScreen.dart';
 import 'package:tugas_besar/UI/launcher/launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tugas_besar/UI/login/login_screen.dart';
+import 'package:tugas_besar/UI/product/addProduct/body/body.dart';
 import 'package:tugas_besar/UI/product/detailProduct/detailProduct_screen.dart';
+import 'package:tugas_besar/UI/product/product_screen.dart';
+import 'package:tugas_besar/UI/profile/profile_screen.dart';
 
 void main() {
   runApp(MyApp());

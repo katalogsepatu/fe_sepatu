@@ -3,10 +3,10 @@ import 'package:tugas_besar/Models/katalog_sepatu.dart';
 import 'package:tugas_besar/constants.dart';
 
 class KatalogSepatuCard extends StatelessWidget {
-  final KatalogSepatuModel product;
+  final KatalogSepatuModel katalogSepatuModel;
   final VoidCallback press;
 
-  const KatalogSepatuCard({Key? key, required this.product, required this.press})
+  const KatalogSepatuCard({Key? key, required this.katalogSepatuModel, required this.press})
       : super(key: key);
 
   @override
@@ -34,13 +34,13 @@ class KatalogSepatuCard extends StatelessWidget {
             child: Transform.rotate(
               angle: -180 / 360,
               child: Hero(
-                tag: '${product.id}',
+                tag: '${katalogSepatuModel.id}',
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: kDefaulPadding),
                   height: 140,
                   width: 200,
                   child: Image.network(
-                    product.image,
+                    katalogSepatuModel.image,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -59,7 +59,7 @@ class KatalogSepatuCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.name,
+                      katalogSepatuModel.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
@@ -67,14 +67,14 @@ class KatalogSepatuCard extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      product.category,
+                      katalogSepatuModel.category,
                       style: TextStyle(fontSize: 10),
                     ),
                     SizedBox(height: 5),
                     Row(
                       children: [
                         Text(
-                          "\Rp.${product.price}",
+                          "\Rp.${katalogSepatuModel.price}",
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 14,

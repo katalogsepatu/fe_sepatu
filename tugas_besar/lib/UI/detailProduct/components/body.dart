@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
-import 'descriptionProduct.dart';
 import 'listOfColors.dart';
 import 'productImage.dart';
-import 'package:tugas_besar/Models/Product/product.dart';
 
 class Body extends StatelessWidget {
   final KatalogSepatuModel;

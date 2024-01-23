@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tugas_besar/Models/Category/category.dart';
-import 'package:tugas_besar/Models/Product/product.dart';
+import 'package:tugas_besar/Models/katalog_sepatu.dart';
 import 'package:tugas_besar/Service/apiService.dart';
 import 'package:tugas_besar/UI/detailProduct/detailScreen.dart';
 import 'package:tugas_besar/UI/home/components/productCard.dart';
-import 'package:tugas_besar/UI/product/components/body.dart';
 import 'package:tugas_besar/constants.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:tugas_besar/Models/katalog_sepatu.dart';
 
 class Body extends StatefulWidget {
   @override
@@ -16,14 +14,11 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   final _dataService = ApiServices();
-  final _formKey = GlobalKey<FormState>();
-  String _result = '-';
-  List<KatalogSepatuModel> _katalogsepatuMdl = [];
-  KatalogSepatuResponse? ctRes;
-  bool isEdit = false;
   late TextEditingController search;
   final PagingController<int, KatalogSepatuModel> _pagingController =
       PagingController(firstPageKey: 0);
+  int selectedIndex = 0;
+  String idKategori = "";
 
   @override
   void initState() {
@@ -35,21 +30,22 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-  try {
-    final newItems = await _dataService.getAllKatalogSepatu(pageKey, search.text);
-    final isLastPage = newItems.length < _pagingController.pageSize;
+    try {
+      final newItems = await _dataService.getAllKatalogSepatu();
+      final itemList = newItems?.toList() ?? [];
 
-    if (isLastPage) {
-      _pagingController.appendLastPage(newItems);
-    } else {
-      final nextPageKey = pageKey + 1;
-      _pagingController.appendPage(newItems, nextPageKey);
+      final isLastPage = itemList.length < _pagingController.itemList!.length;
+
+      if (isLastPage) {
+        _pagingController.appendLastPage(itemList);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(itemList, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
     }
-  } catch (error) {
-    // Handle the error appropriately
-    _pagingController.error = error;
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +79,122 @@ class _BodyState extends State<Body> {
               ),
             ),
           ),
-          // Rest of your code...
+          CategoryList(), // Added the CategoryList widget here
+          SizedBox(height: 10),
+          Expanded(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 100),
+                  decoration: BoxDecoration(
+                      color: kPrimaryLightColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                      )),
+                ),
+                Container(
+                  child: RefreshIndicator(
+                    onRefresh: () => Future.sync(
+                      () => _pagingController.refresh(),
+                    ),
+                    child: PagedListView<int, KatalogSepatuModel>(
+                      pagingController: _pagingController,
+                      builderDelegate:
+                          PagedChildBuilderDelegate<KatalogSepatuModel>(
+                        itemBuilder: (context, item, index) => Container(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailScreen(
+                                    katalogSepatuModel: item,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: KatalogSepatuCard(
+                              katalogSepatuModel: item,
+                              press: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailScreen(
+                                      katalogSepatuModel: item,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class CategoryList extends StatelessWidget {
+  Null get selectedIndex => null;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: kDefaulPadding / 2),
+      height: 30,
+      child: FutureBuilder<List<Category>>(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text('Error loading categories: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No categories available'));
+          } else {
+            List<Category> categories = snapshot.data!;
+
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  // Add your logic here
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(
+                    left: kDefaulPadding,
+                    right: index == categories.length - 1 ? kDefaulPadding : 0,
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: kDefaulPadding),
+                  decoration: BoxDecoration(
+                    color: index == selectedIndex
+                        ? kPrimaryLightColor
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    categories[index].kategori,
+                    style: TextStyle(
+                      color:
+                          index == selectedIndex ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -119,4 +229,9 @@ class Heading extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<List<Category>> fetchData() async {
+  // Your fetchData logic here
+  return [];
 }

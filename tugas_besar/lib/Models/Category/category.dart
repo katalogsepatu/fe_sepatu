@@ -1,4 +1,6 @@
 class Category {
+  static var length;
+
   Category({
     required this.id,
     required this.kategori,

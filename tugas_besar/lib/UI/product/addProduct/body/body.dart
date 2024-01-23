@@ -20,6 +20,31 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   File? _image;
 
+  Future<void> _getImage() async {
+    final pickedFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _saveData() async {
+    // Replace the following line with the logic to save your data
+    // For example, you can save a string, a file, or any other data type
+    var dataToSave = "This is the data to be saved.";
+
+    // Save the data or perform any desired action here
+    // For demonstration purposes, we'll print the data
+    print("Data saved: $dataToSave");
+
+    // Add additional logic here to save or process the data as needed
+    // For example, you can call a function to upload the data to a server
+    // uploadDataToServer(dataToSave);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +96,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               else
                 const Text('Pilih Gambar'),
               ElevatedButton(
+                onPressed: _getImage,
+                child: const Text('Pilih Gambar'),
+              ),
+              ElevatedButton(
                 onPressed: () async {
                   if (_image == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -80,6 +109,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     );
                     return;
                   }
+
+                  _saveData(); // Call the save data method
 
                   final params = {
                     'brand': _brandController.text,
@@ -94,8 +125,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   // For example, make an API call to save the data
                   // and handle the response accordingly
                 },
-                child: const Text('Simpan'),
+                child: const Text('Save'),
               ),
+              
             ],
           ),
         ),
