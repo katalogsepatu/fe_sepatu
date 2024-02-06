@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tb_pemrograman/Screens/HomePage.dart';
-import 'package:tb_pemrograman/login_page.dart';
+// import 'package:tb_pemrograman/Screens/AddProduct_page.dart';
+import 'package:tb_pemrograman/screens/Welcome_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,10 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: Color(0xFFCEDDEE),
       ),
-      routes: {
-        "/": (context) => LoginPage(),
-        "HomePage": (context) => HomePage(),
-      },
+      home: const WelcomeCatalogPage(),
     );
   }
 }

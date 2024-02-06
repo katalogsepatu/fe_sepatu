@@ -1,10 +1,14 @@
 //DIGUNAKAN UNTUK GET ALL DATA
-class KatalogSepatuModel{
+
+import 'package:dio/dio.dart';
+
+class KatalogSepatuModel {
   final String id;
   final String brand;
   final String name;
   final String category;
   final String price;
+  final String diskon;
   final String color;
   final String image;
 
@@ -14,18 +18,21 @@ class KatalogSepatuModel{
     required this.name,
     required this.category,
     required this.price,
+    required this.diskon,
     required this.color,
     required this.image,
   });
 
-  factory KatalogSepatuModel.fromJson(Map<String, dynamic> json) => KatalogSepatuModel(
+  factory KatalogSepatuModel.fromJson(Map<String, dynamic> json) =>
+      KatalogSepatuModel(
         id: json["_id"],
         brand: json["brand"],
         name: json["name"],
         category: json["category"],
         price: json["price"],
+        diskon: json["diskon"],
         color: json["color"],
-        image: json["image"]
+        image: json["image"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,10 +41,12 @@ class KatalogSepatuModel{
         "name": name,
         "category": category,
         "price": price,
+        "diskon": diskon,
         "color": color,
-        "image": image
-        
+        "image": image,
       };
+
+  // static fromResponse(ProductResponse? res) {}
 }
 
 //DIGUNAKAN UNTUK FORM INPUT
@@ -46,26 +55,31 @@ class KatalogSepatuInput {
   final String name;
   final String category;
   final String price;
+  final String diskon;
   final String color;
-  final String image;
+  final String imagePath;
+  final String imageName;
 
   KatalogSepatuInput({
     required this.brand,
     required this.name,
     required this.category,
     required this.price,
+    required this.diskon,
     required this.color,
-    required this.image,
+    required this.imagePath,
+    required this.imageName,
   });
 
-  Map<String, dynamic> toJson() => {
+  FormData formData() => FormData.fromMap({
         "brand": brand,
         "name": name,
         "category": category,
         "price": price,
+        "diskon": diskon,
         "color": color,
-        "image": image
-      };
+        "file": MultipartFile.fromFileSync(imagePath, filename: imageName),
+      });
 }
 
 //DIGUNAKAN UNTUK RESPONSE

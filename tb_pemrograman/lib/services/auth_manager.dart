@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthManager {
   static const String loginStatusKey = '';
   static const String loginTimeKey = '';
+
   static Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('loginStatusKey') ?? false;
@@ -28,6 +29,12 @@ class AuthManager {
     return false;
   }
 
+  static Future<bool> isAdmin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? email = prefs.getString('email');
+    return email == 'admin@gmail.com';
+  }
+
   static Future<void> login(String email, String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('loginStatusKey', true);
@@ -36,11 +43,22 @@ class AuthManager {
     prefs.setString('token', token);
   }
 
+  static Future<void> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getString('fullname');
+    prefs.getString('phonenumber');
+  }
+
   static Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('loginStatusKey');
     prefs.remove('loginTimeKey');
     prefs.remove('email');
     prefs.remove('token');
+  }
+
+  static Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
   }
 }
